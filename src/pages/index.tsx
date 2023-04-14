@@ -1,11 +1,11 @@
 import MovieCard from '@/components/MovieCard';
+import useMovieBookmarks from '@/hooks/useMovieBookmarks';
 import useMoviesSearch from '@/hooks/useMoviesSearch';
 import { SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
   Flex,
-  Heading,
   IconButton,
   Input,
   SimpleGrid,
@@ -13,11 +13,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 export default function Home() {
   const [search, setSearch] = useState('');
   const { error, isLoading, movies } = useMoviesSearch(search);
+  const { movieBookmarks, addBookmark, removeBookmark, markAsWatched } =
+    useMovieBookmarks();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -70,14 +72,25 @@ export default function Home() {
 
     return movies?.length ? (
       <SimpleGrid columns={[1, 2, 3]} spacing='4'>
-        {movies.map((movie) => (
-          <MovieCard
-            key={movie.imdbID}
-            movie={movie}
-            onBookmark={() => {}}
-            onRemoveBookmark={() => {}}
-          />
-        ))}
+        {movies.map((movie) => {
+          const bookmarkedMovie = movieBookmarks.find(
+            (m) => m.imdbID === movie.imdbID
+          );
+
+          return (
+            <MovieCard
+              key={movie.imdbID}
+              movie={{
+                ...movie,
+                isBookmarked: !!bookmarkedMovie,
+                isWatched: bookmarkedMovie?.isWatched,
+              }}
+              onBookmark={addBookmark}
+              onRemoveBookmark={removeBookmark}
+              onMarkWatched={markAsWatched}
+            />
+          );
+        })}
       </SimpleGrid>
     ) : (
       <Center>

@@ -1,6 +1,14 @@
+import MovieCard from '@/components/MovieCard';
+import { API_ROUTES } from '@/constants';
+import useMovieBookmarks from '@/hooks/useMovieBookmarks';
+import { Center, SimpleGrid, Text, Link } from '@chakra-ui/react';
 import Head from 'next/head';
+import NextLink from 'next/link';
 
 const Bookmarks = () => {
+  const { movieBookmarks, addBookmark, removeBookmark, markAsWatched } =
+    useMovieBookmarks();
+
   return (
     <>
       <Head>
@@ -10,7 +18,34 @@ const Bookmarks = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <h1>No bookmarks at the moment.</h1>
+        {movieBookmarks?.length ? (
+          <SimpleGrid columns={[1, 2, 3]} spacing='4'>
+            {movieBookmarks.map((bookmarkedMovie) => (
+              <MovieCard
+                key={bookmarkedMovie.imdbID}
+                movie={bookmarkedMovie}
+                onBookmark={addBookmark}
+                onRemoveBookmark={removeBookmark}
+                onMarkWatched={markAsWatched}
+              />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Center>
+            <Text size='lg'>
+              No movies are bookmarked. Search for movie&nbsp;
+              <Link
+                as={NextLink}
+                href={API_ROUTES.home.path}
+                color='gray.300'
+                passHref
+              >
+                here
+              </Link>
+              &nbsp;to bookmark.
+            </Text>
+          </Center>
+        )}
       </main>
     </>
   );

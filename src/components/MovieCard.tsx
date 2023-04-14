@@ -11,20 +11,26 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon, StarIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, StarIcon, CheckIcon } from '@chakra-ui/icons';
 import type { BookmarkableMovie } from '@/types';
 
 type Props = {
   movie: BookmarkableMovie;
   onBookmark: (movie: BookmarkableMovie) => void;
   onRemoveBookmark: (movie: BookmarkableMovie) => void;
+  onMarkWatched: (movie: BookmarkableMovie) => void;
 };
 
 const fallbackImageSrc =
   'https://www.seekpng.com/png/detail/20-201439_play-movie-comments-png-play-movie-icon.png';
 
-const MovieCard = ({ movie, onBookmark, onRemoveBookmark }: Props) => {
-  const { Title, Year, Type, Poster, imdbID, isBookmarked } = movie;
+const MovieCard = ({
+  movie,
+  onBookmark,
+  onRemoveBookmark,
+  onMarkWatched,
+}: Props) => {
+  const { Title, Year, Type, Poster, imdbID, isBookmarked, isWatched } = movie;
 
   return (
     <Card borderRadius='lg' justifyContent='spce-between'>
@@ -61,6 +67,21 @@ const MovieCard = ({ movie, onBookmark, onRemoveBookmark }: Props) => {
           </Link>
         </Tooltip>
 
+        {isBookmarked && (
+          <Tooltip label={isWatched ? 'Watched' : 'Mark as watched'}>
+            <IconButton
+              icon={<CheckIcon />}
+              aria-label='Mark as watched'
+              size='sm'
+              variant={isWatched ? 'solid' : 'ghost'}
+              colorScheme={isWatched ? 'green' : 'gray'}
+              isDisabled={isWatched}
+              disabled={isWatched}
+              onClick={() => !isWatched && onMarkWatched(movie)}
+            />
+          </Tooltip>
+        )}
+
         <Tooltip label={isBookmarked ? 'Remove Bookmark' : 'Bookmark'}>
           <IconButton
             icon={<StarIcon />}
@@ -69,7 +90,7 @@ const MovieCard = ({ movie, onBookmark, onRemoveBookmark }: Props) => {
             variant={isBookmarked ? 'solid' : 'ghost'}
             colorScheme={isBookmarked ? 'yellow' : 'gray'}
             onClick={() =>
-              isBookmarked ? onBookmark(movie) : onRemoveBookmark(movie)
+              isBookmarked ? onRemoveBookmark(movie) : onBookmark(movie)
             }
           />
         </Tooltip>
