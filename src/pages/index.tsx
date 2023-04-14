@@ -1,10 +1,50 @@
 import MovieCard from '@/components/MovieCard';
 import useMoviesSearch from '@/hooks/useMoviesSearch';
-import { Box, Center, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Center,
+  Flex,
+  Heading,
+  IconButton,
+  Input,
+  SimpleGrid,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import Head from 'next/head';
+import { useRef, useState } from 'react';
 
 export default function Home() {
-  const { error, isLoading, movies } = useMoviesSearch('Avengers Endgame');
+  const [search, setSearch] = useState('');
+  const { error, isLoading, movies } = useMoviesSearch(search);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const renderSearch = () => (
+    <Box mb={10}>
+      <Flex alignItems='center' as='form' onSubmit={(e) => e.preventDefault()}>
+        <Input
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setSearch(inputRef.current?.value || '');
+            }
+          }}
+          placeholder='Enter a movie title'
+          mr={3}
+          ref={inputRef}
+          size='lg'
+        />
+        <IconButton
+          aria-label='Search'
+          title='Search'
+          size='lg'
+          icon={<SearchIcon />}
+          onClick={() => setSearch(inputRef.current?.value || '')}
+        />
+      </Flex>
+    </Box>
+  );
 
   const renderMovies = () => {
     if (isLoading) {
@@ -28,7 +68,7 @@ export default function Home() {
       );
     }
 
-    return (
+    return movies?.length ? (
       <SimpleGrid columns={[1, 2, 3]} spacing='4'>
         {movies.map((movie) => (
           <MovieCard
@@ -39,6 +79,10 @@ export default function Home() {
           />
         ))}
       </SimpleGrid>
+    ) : (
+      <Center>
+        <Text size='lg'>Search for movies...</Text>
+      </Center>
     );
   };
 
@@ -50,7 +94,11 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>{renderMovies()}</main>
+
+      <main>
+        {renderSearch()}
+        {renderMovies()}
+      </main>
     </>
   );
 }
