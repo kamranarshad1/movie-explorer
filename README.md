@@ -1,8 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This app allows you to search movies by title, bookmark them, and review them in the future.
+Made using NextJS and Chakra UI and [deployed](https://movie-explorer-delta.vercel.app/) on Vercel.
 
 ## Getting Started
 
-First, run the development server:
+Please make sure you have latest stable node version install. You can download node from https://nodejs.org/en/download.
+
+To successuly run the app locally you will need to add `.env.local` file in root directory (where package.json is located). Please see `.env.example` for required evironment variables.
+
+Install the dependencies:
+
+```bash
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -14,13 +29,9 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+You can start editing any page by modifying `pages/*.tsx` files. The pages auto-updates as you edit the file.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Learn More
 
