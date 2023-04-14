@@ -13,7 +13,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const LAST_SEARCH_KEY = 'search';
 
 export default function Home() {
   const [search, setSearch] = useState('');
@@ -23,13 +25,27 @@ export default function Home() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (search) sessionStorage.setItem(LAST_SEARCH_KEY, search);
+  }, [search]);
+
+  useEffect(() => {
+    const previousSearch =
+      (sessionStorage.getItem(LAST_SEARCH_KEY) as string) || '';
+
+    setSearch(previousSearch);
+    if (inputRef.current) {
+      inputRef.current.value = previousSearch;
+    }
+  }, []);
+
   const renderSearch = () => (
     <Box mb={10}>
       <Flex alignItems='center' as='form' onSubmit={(e) => e.preventDefault()}>
         <Input
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              setSearch(inputRef.current?.value || '');
+              setSearch(inputRef.current?.value || search);
             }
           }}
           placeholder='Enter a movie title'
@@ -42,7 +58,7 @@ export default function Home() {
           title='Search'
           size='lg'
           icon={<SearchIcon />}
-          onClick={() => setSearch(inputRef.current?.value || '')}
+          onClick={() => setSearch(inputRef.current?.value || search)}
         />
       </Flex>
     </Box>
