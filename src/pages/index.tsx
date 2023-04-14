@@ -1,3 +1,4 @@
+import MovieCard from '@/components/MovieCard';
 import useMoviesSearch from '@/hooks/useMoviesSearch';
 import { Box, Center, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
 import Head from 'next/head';
@@ -27,7 +28,18 @@ export default function Home() {
       );
     }
 
-    return <pre>{JSON.stringify(movies, null, 2)}</pre>;
+    return (
+      <SimpleGrid columns={[1, 2, 3]} spacing='4'>
+        {movies.map((movie) => (
+          <MovieCard
+            key={movie.imdbID}
+            movie={movie}
+            onBookmark={() => {}}
+            onRemoveBookmark={() => {}}
+          />
+        ))}
+      </SimpleGrid>
+    );
   };
 
   return (
