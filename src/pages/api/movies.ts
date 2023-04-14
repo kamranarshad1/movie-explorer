@@ -49,7 +49,12 @@ export default async function handler(
     if (data.Response === 'True') {
       res.status(200).json(data.Search);
     } else {
-      res.status(400).json({ message: data.Error });
+      res.status(400).json({
+        message:
+          data.Error === 'Too many results.'
+            ? `${data.Error} Please narrow down you search.`
+            : data.Error,
+      });
     }
   } catch (error) {
     res
